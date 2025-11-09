@@ -1,27 +1,13 @@
-// Ruta de integración: Proyecto con su líder y sus tareas
-router.get('/:id/full', (req, res) => {
-  const id = parseInt(req.params.id);
+const express = require('express');
+const router = express.Router();
+const controller = require('../controllers/projectController');
 
-  // Importamos los datos
-  const projects = require('../data/projects');
-  const people = require('../data/people');
-  const tasks = require('../data/tasks');
+router.get('/', controller.getAll);
+router.get('/:id', controller.getById);
+router.post('/', controller.create);
+router.put('/:id', controller.update);
+router.delete('/:id', controller.delete);
 
-  // Buscamos el proyecto
-  const project = projects.find(p => p.id === id);
-  if (!project) return res.status(404).json({ message: "Proyecto no encontrado" });
+module.exports = router;
 
-  // Buscamos la persona (líder) que tiene este proyecto
-  const leader = people.find(p => p.id === project.personId);
-
-  // Buscamos las tareas asociadas al proyecto
-  const projectTasks = tasks.filter(t => t.projectId === project.id);
-
-  // Respuesta combinada
-  res.json({
-    project,
-    leader,
-    tasks: projectTasks
-  });
-});
 
