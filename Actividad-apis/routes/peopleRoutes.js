@@ -1,24 +1,13 @@
-// Ruta de integración: Persona con sus proyectos y tareas
-router.get('/:id/full', (req, res) => {
-  const id = parseInt(req.params.id);
+const express = require('express');
+const router = express.Router();
+const controller = require('../controllers/peopleController');
 
-  const people = require('../data/people');
-  const projects = require('../data/projects');
-  const tasks = require('../data/tasks');
+router.get('/', controller.getAll);
+router.get('/:id', controller.getById);
+router.post('/', controller.create);
+router.put('/:id', controller.update);
+router.delete('/:id', controller.delete);
 
-  const person = people.find(p => p.id === id);
-  if (!person) return res.status(404).json({ message: "Persona no encontrada" });
+module.exports = router;
 
-  // Proyectos que tiene esta persona
-  const personProjects = projects.filter(pr => pr.personId === person.id);
-
-  // Tareas asociadas a esos proyectos
-  const personTasks = tasks.filter(ts => personProjects.some(pr => pr.id === ts.projectId));
-
-  res.json({
-    person,
-    projects: personProjects,
-    tasks: personTasks
-  });
-});
 
